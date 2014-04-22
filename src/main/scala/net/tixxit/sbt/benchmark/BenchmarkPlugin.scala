@@ -10,6 +10,9 @@ import Keys._
 import org.openjdk.jmh.generators.core.{ BenchmarkGenerator, FileSystemDestination }
 import org.openjdk.jmh.generators.bytecode.ASMGeneratorSource
 
+import org.openjdk.jmh.runner.{ Runner, RunnerException }
+import org.openjdk.jmh.runner.options.{ Options, OptionsBuilder }
+
 object BenchmarkPlugin extends Plugin {
 
   lazy val BenchmarkPrecompile = config("benchmark-precompile").extend(Runtime)
@@ -19,9 +22,10 @@ object BenchmarkPlugin extends Plugin {
 
   object BenchmarkKeys {
     val jmhGenBenchmarks = taskKey[JmhGeneratedSources]("Generate JMH benchmarks")
+    val benchmark = inputKey[Unit]("Runs the benchmarks")
   }
 
-  import BenchmarkKeys._
+  import BenchmarkKeys.{ jmhGenBenchmarks }
 
   object benchmark {
     lazy val settings: Seq[Setting[_]] =
@@ -35,6 +39,8 @@ object BenchmarkPlugin extends Plugin {
     )
 
     def jmhGenSettings(precompileConfig: Configuration): Seq[Setting[_]] = Seq(
+      fork in run := true, // This is actually required for correctness.
+      BenchmarkKeys.benchmark := runBenchmarks(fullClasspath.value, (runner in run).value, streams.value),
       jmhGenBenchmarks := generateJmhBenchmark(
         sourceManaged.value,
         resourceManaged.value,
@@ -44,6 +50,10 @@ object BenchmarkPlugin extends Plugin {
       sourceGenerators <+= Def.task { jmhGenBenchmarks.value.sources },
       resourceGenerators <+= Def.task { jmhGenBenchmarks.value.resources }
     )
+  }
+
+  private def runBenchmarks(cp: Classpath, scalaRun: ScalaRun, s: TaskStreams): Unit = {
+    scalaRun.run("org.openjdk.jmh.Main", cp.map(_.data), Seq("-f", "1", ".*"), s.log)
   }
 
   private def listFilesRecursively(root: File)(pred: File => Boolean): List[File] = {
