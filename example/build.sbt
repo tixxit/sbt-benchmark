@@ -4,6 +4,6 @@ scalaVersion := "2.10.3"
 
 version := "0.0.1"
 
-libraryDependencies += "org.openjdk.jmh" % "jmh-core" % "0.5.6"
+libraryDependencies += "org.openjdk.jmh" % "jmh-core" % "1.0"
 
 benchmark.settings

@@ -8,7 +8,7 @@ import Def.{ Setting, Classpath }
 import Keys._
 
 import org.openjdk.jmh.generators.core.{ BenchmarkGenerator, FileSystemDestination }
-import org.openjdk.jmh.generators.bytecode.ASMGeneratorSource
+import org.openjdk.jmh.generators.asm.ASMGeneratorSource
 
 import org.openjdk.jmh.runner.{ Runner, RunnerException }
 import org.openjdk.jmh.runner.options.{ Options, OptionsBuilder }

@@ -1,8 +1,8 @@
 package net.tixxit.sbt.benchmark.example
 
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark
+import org.openjdk.jmh.annotations.Benchmark
 
 class HelloBenchmark {
-  @GenerateMicroBenchmark
+  @Benchmark
   def sayHello = "hello"
 }
