@@ -41,7 +41,7 @@ object BenchmarkPlugin extends sbt.AutoPlugin {
   private def commonSettings: Seq[Setting[_]] = Seq(
     jmhVersion := "1.0",
     libraryDependencies += {
-      "org.openjdk.jmh" % "jmh-core" % jmhVersion.value % "benchmark-precompile,benchmark"
+      "org.openjdk.jmh" % "jmh-core" % jmhVersion.value % "benchmark-precompile,benchmark,provided,optional"
     }
   )
 
