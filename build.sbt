@@ -6,7 +6,7 @@ name := "sbt-benchmark"
 
 organization := "net.tixxit"
 
-version := "0.1.0"
+version := "0.1.1"
 
 bintrayResolverSettings
 

@@ -8,7 +8,7 @@ Getting Started
 
 Create a new file `project/benchmark.sbt` for the benchmark SBT plugin:
 
-    addSbtPlugin("net.tixxit" %% "sbt-benchmark" % "0.0.3")
+    addSbtPlugin("net.tixxit" %% "sbt-benchmark" % "0.1.1")
     
     libraryDependencies ++= Seq(
       "org.openjdk.jmh" % "jmh-core" % "1.0",
@@ -24,7 +24,9 @@ Add the `BenchmarkPlugin.benchmark.settings` to your project settings:
 
 Write some JMH benchmarks in `myProject/src/benchmark/...`.
 
-Coming soon: running your benchmarks!
+Running your benchmarks:
+
+   > benchmark:benchmark <JMH args>
 
 Gotchas
 -------
