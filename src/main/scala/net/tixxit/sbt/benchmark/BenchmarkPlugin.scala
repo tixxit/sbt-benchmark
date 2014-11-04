@@ -6,7 +6,7 @@ import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 
 import sbt._
-import Def.{ Setting, Classpath }
+import Def.{ Setting, Classpath, spaceDelimited }
 import Keys._
 
 import org.openjdk.jmh.generators.core.{ BenchmarkGenerator, FileSystemDestination }
@@ -52,7 +52,7 @@ object BenchmarkPlugin extends sbt.AutoPlugin {
 
   private def jmhGenSettings(precompileConfig: Configuration): Seq[Setting[_]] = Seq(
     fork in run := true, // This is actually required for correctness.
-    benchmarkRun := runBenchmarks(fullClasspath.value, (runner in run).value, streams.value),
+    benchmarkRun := runBenchmarks(fullClasspath.value, (runner in run).value, spaceDelimited("<JMH args>").parsed, streams.value),
     jmhGenBenchmarks := generateJmhBenchmark(
       sourceManaged.value,
       resourceManaged.value,
@@ -65,8 +65,9 @@ object BenchmarkPlugin extends sbt.AutoPlugin {
     resourceGenerators <+= Def.task { jmhGenBenchmarks.value.resources }
   )
 
-  private def runBenchmarks(cp: Classpath, scalaRun: ScalaRun, s: TaskStreams): Unit = {
-    scalaRun.run("org.openjdk.jmh.Main", cp.map(_.data), Seq("-f", "1", ".*"), s.log)
+  private def runBenchmarks(cp: Classpath, scalaRun: ScalaRun, args: Seq[String], s: TaskStreams): Unit = {
+    val args0 = if (args.size == 0) Seq("-f", "1", ".*") else args
+    scalaRun.run("org.openjdk.jmh.Main", cp.map(_.data), args0, s.log)
   }
 
   private def listFilesRecursively(root: File)(pred: File => Boolean): List[File] = {
